@@ -1,6 +1,7 @@
 import { Product } from "@/types/product";
 
-const API_BASE = process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:5000";
+const API_BASE =
+  process.env.NEXT_BACKEND_URL;
 const API_URL = `${API_BASE}/api`;
 
 const toProduct = (data: any): Product => ({
