@@ -12,8 +12,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   let productEntries: MetadataRoute.Sitemap = [];
 
   try {
-    const slugs = await fetchProductSlugs(200);
-    productEntries = slugs.map((slug) => ({
+    const slugs: string[] = await fetchProductSlugs(200);
+    productEntries = slugs.map((slug: string) => ({
       url: `${baseUrl}/product/${slug}`,
       lastModified: generatedAt,
       changeFrequency: "weekly" as const,
