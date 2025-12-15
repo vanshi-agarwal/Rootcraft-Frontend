@@ -1,0 +1,202 @@
+@import "tailwindcss";
+
+:root {
+  --background: #ffffff;
+  --foreground: #171717;
+}
+
+@theme inline {
+  /* --- Base Colors --- */
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+
+  /* --- Typography --- */
+  /* Existing Fonts */
+  --font-poppins: var(--font-poppins);
+  --font-montserrat: var(--font-montserrat);
+
+  /* NEW: Luxury Serif Font (Required for Hero Section) */
+  /* We will define --font-playfair in layout.tsx next */
+  --font-serif: var(--font-playfair), ui-serif, Georgia, Cambria,
+    "Times New Roman", Times, serif;
+
+  /* --- Premium Furniture Palette --- */
+  /* These variables allow you to use bg-beige-100 or text-wood-dark */
+  --color-beige-100: #faf3ea;
+  /* Soft Cream Background */
+  --color-beige-200: #e8dcc4;
+  /* Warm Glow */
+  --color-wood-dark: #242424;
+  /* Charcoal/Dark Wood Text */
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  /* Default to Poppins, but Hero will override with Serif */
+  font-family: var(--font-poppins), sans-serif;
+  overflow-x: hidden;
+}
+
+/* --- Smooth Scrolling for the whole page --- */
+html {
+  scroll-behavior: smooth;
+}
+
+/* --- Custom Premium Scrollbar --- */
+::-webkit-scrollbar {
+  width: 8px;
+  display: none;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 4px;
+  transition: background 0.3s ease;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+
+/* --- 3D Perspective --- */
+header {
+  perspective: 1000px;
+  transform-style: preserve-3d;
+}
+
+/* --- Performance Optimizations --- */
+.will-change-transform {
+  will-change: transform;
+}
+
+/* Smooth horizontal scroll for carousels */
+.hide-scrollbar {
+  -webkit-overflow-scrolling: touch;
+  scroll-behavior: smooth;
+}
+
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+/* --- Animation Keyframes --- */
+
+/* Snowfall (Keep existing) */
+@keyframes snowfall {
+  0% {
+    transform: translateY(-10vh) translateX(0);
+  }
+
+  100% {
+    transform: translateY(100vh) translateX(20px);
+  }
+}
+
+.animate-snowfall {
+  animation: snowfall linear infinite;
+}
+
+/* Shimmer (Keep existing) */
+@keyframes shimmer {
+  0% {
+    transform: translateX(-100%);
+  }
+
+  100% {
+    transform: translateX(200%);
+  }
+}
+
+.animate-shimmer {
+  animation: shimmer 2s infinite;
+}
+
+/* --- Utility Utilities --- */
+/* Hide scrollbar for horizontal scroll areas but keep functionality */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.animate-grain {
+  animation: grain 8s steps(10) infinite;
+}
+
+@keyframes grain {
+
+  0%,
+  100% {
+    transform: translate(0, 0);
+  }
+
+  10% {
+    transform: translate(-5%, -10%);
+  }
+
+  20% {
+    transform: translate(-15%, 5%);
+  }
+
+  30% {
+    transform: translate(7%, -25%);
+  }
+
+  40% {
+    transform: translate(-5%, 25%);
+  }
+
+  50% {
+    transform: translate(-15%, 10%);
+  }
+
+  60% {
+    transform: translate(15%, 0%);
+  }
+
+  70% {
+    transform: translate(0%, 15%);
+  }
+
+  80% {
+    transform: translate(3%, 35%);
+  }
+
+  90% {
+    transform: translate(-10%, 10%);
+  }
+}
+
+/* Testimonials Marquee Animation */
+@keyframes scroll {
+  0% {
+    transform: translate3d(0, 0, 0);
+  }
+
+  100% {
+    transform: translate3d(-50%, 0, 0);
+  }
+}
+
+.animate-scroll {
+  animation: scroll linear infinite;
+  will-change: transform;
+}
+
+.marquee-container:hover .animate-scroll {
+  animation-play-state: paused;
+}
+
+.marquee-container {
+  -webkit-overflow-scrolling: touch;
+  backface-visibility: hidden;
+  perspective: 1000px;
+}
