@@ -18,6 +18,10 @@ interface User {
         zip: string;
         country: string;
     };
+    paymentDetails?: {
+        cardLast4?: string;
+        brand?: string;
+    };
 }
 
 interface AuthContextType {
@@ -60,7 +64,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
             showToast({
                 type: "success",
                 action: "login_success",
-                message: `Welcome back, ${data.name}!`,
+                message: Welcome back, ${data.name}!,
             });
             router.push("/");
         } catch (error: any) {

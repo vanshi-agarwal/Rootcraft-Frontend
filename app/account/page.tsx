@@ -39,9 +39,12 @@ const addressSchema = z.object({
 });
 type AddressFormData = z.infer<typeof addressSchema>;
 
-// Payment Schema (Placeholder for now as we don't handle real card data directly this way usually)
+// Payment Schema
 const paymentSchema = z.object({
-  cardNumber: z.string().regex(/^\d{16}$/, "Card number must be 16 digits"),
+  // Allow spaces in input but enforce 16 digits overall
+  cardNumber: z
+    .string()
+    .regex(/^(?:\d{4} ?){3}\d{4}$/, "Card number must be 16 digits"),
   expiry: z.string().regex(/^(0[1-9]|1[0-2])\/?([0-9]{2})$/, "MM/YY format"),
   cvc: z.string().regex(/^\d{3,4}$/, "CVC must be 3 or 4 digits"),
   cardHolder: z.string().min(3, "Card holder name required"),
@@ -365,9 +368,7 @@ function OrdersTab() {
                     {order.orderItems.length !== 1 ? "s" : ""}
                   </span>
                   <span>•</span>
-                  <span>
-                    Payment: {order.isPaid ? "Paid" : "Pending"}
-                  </span>
+                  <span>Payment: {order.isPaid ? "Paid" : "Pending"}</span>
                 </div>
               </div>
               <div className="text-right">
@@ -375,7 +376,7 @@ function OrdersTab() {
                   ₹{order.totalPrice.toLocaleString("en-IN")}
                 </p>
                 <Link
-                  href={`/account?order=${order._id}`}
+                  href={/account?order=${order._id}}
                   className="text-sm text-[#B88E2F] hover:underline mt-1 inline-block"
                 >
                   View Details
@@ -392,6 +393,8 @@ function OrdersTab() {
 function AddressTab({ user }: { user: any }) {
   const [isAdding, setIsAdding] = useState(false);
   const { showToast } = useToast();
+  const [cardNumber, setCardNumber] = useState("");
+  const [expiry, setExpiry] = useState("");
 
   // Ideally, address might be an array in future, currently User model allows one address object?
   // User model: address: { street, city... }
@@ -612,23 +615,33 @@ function AddressTab({ user }: { user: any }) {
 function PaymentTab({ user }: { user: any }) {
   const [isAdding, setIsAdding] = useState(false);
   const { showToast } = useToast();
+  const [cardNumber, setCardNumber] = useState("");
+  const [expiry, setExpiry] = useState("");
 
   const {
     register,
     handleSubmit,
     reset,
+    setValue,
     formState: { errors, isSubmitting },
   } = useForm<PaymentFormData>({
     resolver: zodResolver(paymentSchema),
+    defaultValues: {
+      cardNumber: "",
+      expiry: "",
+      cvc: "",
+      cardHolder: "",
+    },
   });
 
   const onSubmit = async (data: PaymentFormData) => {
-    // Extract card info
-    const last4 = data.cardNumber.slice(-4);
+    // Normalize card number (remove spaces) and extract info
+    const normalizedCard = data.cardNumber.replace(/\s+/g, "");
+    const last4 = normalizedCard.slice(-4);
     let brand = "Card";
-    if (data.cardNumber.startsWith("4")) brand = "Visa";
-    else if (data.cardNumber.startsWith("5")) brand = "Mastercard";
-    else if (data.cardNumber.startsWith("3")) brand = "Amex";
+    if (normalizedCard.startsWith("4")) brand = "Visa";
+    else if (normalizedCard.startsWith("5")) brand = "Mastercard";
+    else if (normalizedCard.startsWith("3")) brand = "Amex";
 
     try {
       await api.put("/users/profile", {
@@ -644,6 +657,8 @@ function PaymentTab({ user }: { user: any }) {
       });
       setIsAdding(false);
       reset();
+      setCardNumber("");
+      setExpiry("");
       window.location.reload();
     } catch (error: any) {
       showToast({
@@ -690,7 +705,7 @@ function PaymentTab({ user }: { user: any }) {
                 {user.paymentDetails.brand} ending in{" "}
                 {user.paymentDetails.cardLast4}
               </h4>
-              <p className="text-gray-600 text-sm mt-1">Expiry: **/20**</p>
+              <p className="text-gray-600 text-sm mt-1">Expiry: */20*</p>
             </div>
           </div>
         </div>
@@ -749,9 +764,23 @@ function PaymentTab({ user }: { user: any }) {
                       size={18}
                     />
                     <input
-                      {...register("cardNumber")}
+                      {...register("cardNumber", {
+                        onChange: (e) => {
+                          let value = e.target.value.replace(/\D/g, "");
+                          value = value.slice(0, 16);
+                          const groups = value.match(/.{1,4}/g) || [];
+                          const formatted = groups.join(" ");
+                          setCardNumber(formatted);
+                          setValue("cardNumber", formatted, {
+                            shouldValidate: true,
+                            shouldTouch: true,
+                          });
+                        },
+                      })}
                       type="text"
-                      maxLength={16}
+                      inputMode="numeric"
+                      maxLength={19} // 16 digits + 3 spaces
+                      value={cardNumber}
                       className="w-full pl-11 pr-4 py-3 rounded-xl border border-gray-200 outline-none focus:border-[#B88E2F] bg-white"
                       placeholder="0000 0000 0000 0000"
                     />
@@ -768,7 +797,23 @@ function PaymentTab({ user }: { user: any }) {
                       Expiry Date
                     </label>
                     <input
-                      {...register("expiry")}
+                      {...register("expiry", {
+                        onChange: (e) => {
+                          let value = e.target.value.replace(/\D/g, "");
+                          if (value.length > 4) value = value.slice(0, 4);
+                          if (value.length >= 3) {
+                            value = ${value.slice(0, 2)}/${value.slice(2)};
+                          }
+                          setExpiry(value);
+                          setValue("expiry", value, {
+                            shouldValidate: true,
+                            shouldTouch: true,
+                          });
+                        },
+                      })}
+                      inputMode="numeric"
+                      maxLength={5}
+                      value={expiry}
                       className="w-full px-4 py-3 rounded-xl border border-gray-200 outline-none focus:border-[#B88E2F] bg-white"
                       placeholder="MM/YY"
                     />
