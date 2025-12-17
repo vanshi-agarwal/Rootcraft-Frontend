@@ -64,7 +64,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
             showToast({
                 type: "success",
                 action: "login_success",
-                message: Welcome back, ${data.name}!,
+                message: `Welcome back, ${data.name}!`,
             });
             router.push("/");
         } catch (error: any) {

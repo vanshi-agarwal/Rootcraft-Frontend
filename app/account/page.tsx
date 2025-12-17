@@ -123,11 +123,10 @@ export default function AccountPage() {
                     <button
                       key={tab.id}
                       onClick={() => setActiveTab(tab.id as Tab)}
-                      className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 text-sm font-medium cursor-pointer ${
-                        isActive
+                      className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 text-sm font-medium cursor-pointer ${isActive
                           ? "bg-[#B88E2F] text-white shadow-md shadow-[#B88E2F]/20"
                           : "text-gray-600 hover:bg-gray-50"
-                      }`}
+                        }`}
                     >
                       <Icon size={18} />
                       {tab.label}
@@ -340,19 +339,18 @@ function OrdersTab() {
                     Order #{order._id.slice(-6).toUpperCase()}
                   </h4>
                   <span
-                    className={`px-3 py-1 rounded-full text-xs font-medium ${
-                      order.isDelivered
+                    className={`px-3 py-1 rounded-full text-xs font-medium ${order.isDelivered
                         ? "bg-green-50 text-green-700"
                         : order.isPaid
-                        ? "bg-blue-50 text-blue-700"
-                        : "bg-yellow-50 text-yellow-700"
-                    }`}
+                          ? "bg-blue-50 text-blue-700"
+                          : "bg-yellow-50 text-yellow-700"
+                      }`}
                   >
                     {order.isDelivered
                       ? "Delivered"
                       : order.isPaid
-                      ? "Processing"
-                      : "Pending"}
+                        ? "Processing"
+                        : "Pending"}
                   </span>
                 </div>
                 <p className="text-sm text-gray-500 mb-2">
@@ -376,7 +374,7 @@ function OrdersTab() {
                   ₹{order.totalPrice.toLocaleString("en-IN")}
                 </p>
                 <Link
-                  href={/account?order=${order._id}}
+                  href={`/account/order/${order._id}`}
                   className="text-sm text-[#B88E2F] hover:underline mt-1 inline-block"
                 >
                   View Details
@@ -802,7 +800,7 @@ function PaymentTab({ user }: { user: any }) {
                           let value = e.target.value.replace(/\D/g, "");
                           if (value.length > 4) value = value.slice(0, 4);
                           if (value.length >= 3) {
-                            value = ${value.slice(0, 2)}/${value.slice(2)};
+                            value = `${value.slice(0, 2)}/${value.slice(2)}`;
                           }
                           setExpiry(value);
                           setValue("expiry", value, {
