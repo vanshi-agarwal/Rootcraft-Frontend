@@ -22,7 +22,7 @@ import {
 import Header from "@/app/components/Header";
 import Footer from "@/app/components/Footer";
 import { useToast } from "@/app/context/ToastContext";
-import api from "@/lib/axios";
+import { publicApi } from "@/lib/axios";
 
 // Blog interface matching backend model
 interface Blog {
@@ -66,7 +66,7 @@ export default function BlogDetailsPage() {
       setLoading(true);
       setError(null);
 
-      const { data } = await api.get(`/blogs/${slug}`);
+      const { data } = await publicApi.get(`/blogs/${slug}`);
 
       if (!data) {
         throw new Error("Blog not found");
@@ -74,8 +74,8 @@ export default function BlogDetailsPage() {
 
       setBlog(data);
 
-      // Fetch latest blogs for sidebar (excluding current blog)
-      const { data: latestData } = await api.get("/blogs", {
+      // Fetch latest blogs for sidebar (excluding current blog) - public endpoint
+      const { data: latestData } = await publicApi.get("/blogs", {
         params: {
           published: true,
           sortBy: "newest",

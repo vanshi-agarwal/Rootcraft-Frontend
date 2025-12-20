@@ -29,7 +29,7 @@ import { useCart } from "../context/CartContext";
 import { useWishlist } from "../context/WishlistContext";
 import { useRouter } from "next/navigation";
 import { useAuth } from "../context/AuthContext";
-import api from "@/lib/axios";
+import api, { publicApi } from "@/lib/axios";
 
 // --- DUMMY DATA ---
 const ANNOUNCEMENT_LINKS = [
@@ -133,12 +133,12 @@ const Header = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        // Fetch categories
-        const { data: categoriesData } = await api.get("/categories");
+        // Fetch categories (public endpoint)
+        const { data: categoriesData } = await publicApi.get("/categories");
         setCategories(categoriesData || []);
 
-        // Fetch trending products (sorted by rating, limit 2)
-        const { data: productsData } = await api.get("/products", {
+        // Fetch trending products (sorted by rating, limit 2) - public endpoint
+        const { data: productsData } = await publicApi.get("/products", {
           params: {
             pageSize: 2,
             sortBy: "rating",
@@ -146,8 +146,8 @@ const Header = () => {
         });
         setTrendingProducts(productsData?.products || []);
 
-        // Fetch top blogs (newest, limit 2)
-        const { data: blogsData } = await api.get("/blogs", {
+        // Fetch top blogs (newest, limit 2) - public endpoint
+        const { data: blogsData } = await publicApi.get("/blogs", {
           params: {
             limit: 2,
             sortBy: "newest",

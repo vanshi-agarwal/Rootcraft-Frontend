@@ -163,6 +163,7 @@ export default function RootLayout({
       <body
         // 3. Added playfair.variable to the class list
         className={`${poppins.variable} ${montserrat.variable} ${playfair.variable} antialiased`}
+        suppressHydrationWarning
       >
         <SmoothScroll />
         <Suspense fallback={null}>

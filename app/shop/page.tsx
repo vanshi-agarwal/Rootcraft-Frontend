@@ -31,7 +31,7 @@ import Footer from "../components/Footer";
 import ProductCard from "../components/ProductCard";
 import { useCart } from "../context/CartContext";
 import FeaturesSection from "../components/FeaturesSection";
-import api from "@/lib/axios";
+import { publicApi } from "@/lib/axios";
 import { useToast } from "../context/ToastContext";
 import { Product } from "@/types/product";
 
@@ -326,8 +326,8 @@ export default function ShopPage() {
         params.sortBy = sortBy;
       }
 
-      // Fetch products
-      const { data } = await api.get("/products", { params });
+      // Fetch products (public endpoint)
+      const { data } = await publicApi.get("/products", { params });
 
       // Transform products
       const transformedProducts = data.products.map(transformProduct);
@@ -391,7 +391,7 @@ export default function ShopPage() {
    */
   const fetchCategories = useCallback(async () => {
     try {
-      const { data } = await api.get("/categories");
+      const { data } = await publicApi.get("/categories");
       const categoryNames = data.map((cat: any) => cat.name);
       setCategories(["All", ...categoryNames]);
     } catch (err) {

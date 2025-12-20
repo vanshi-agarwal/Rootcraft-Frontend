@@ -7,7 +7,7 @@ import { motion } from "framer-motion";
 import { Search, User, Tag, ChevronRight, ArrowRight, Home, Loader2 } from "lucide-react";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
-import api from "@/lib/axios";
+import { publicApi } from "@/lib/axios";
 import { useToast } from "@/app/context/ToastContext";
 
 // Blog interface matching backend model
@@ -70,7 +70,7 @@ export default function BlogPage() {
       setLoading(true);
       setError(null);
 
-      const { data } = await api.get("/blogs", {
+      const { data } = await publicApi.get("/blogs", {
         params: {
           published: true,
           sortBy: "newest",

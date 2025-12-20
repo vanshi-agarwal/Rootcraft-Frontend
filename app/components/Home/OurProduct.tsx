@@ -12,7 +12,7 @@ import { motion } from "framer-motion";
 import ProductCard from "../ProductCard";
 import { useCart } from "../../context/CartContext";
 import SplitText from "../SplitText";
-import api from "@/lib/axios";
+import { publicApi } from "@/lib/axios";
 import { Product } from "@/types/product";
 import { Loader2 } from "lucide-react";
 
@@ -74,8 +74,8 @@ const OurProducts = () => {
       setLoading(true);
       setError(null);
 
-      // Fetch first 9 products (sorted by newest first)
-      const { data } = await api.get("/products", {
+      // Fetch first 9 products (sorted by newest first) - public endpoint
+      const { data } = await publicApi.get("/products", {
         params: {
           pageNumber: 1,
           pageSize: 9,

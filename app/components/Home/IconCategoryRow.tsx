@@ -20,7 +20,7 @@ import {
   ArrowRight,
   Package,
 } from "lucide-react";
-import api from "@/lib/axios";
+import { publicApi } from "@/lib/axios";
 import { Loader2 } from "lucide-react";
 
 // ==================== TYPES ====================
@@ -116,7 +116,7 @@ const IconCategoryRow = () => {
     try {
       setLoading(true);
       setError(null);
-      const { data } = await api.get("/categories");
+      const { data } = await publicApi.get("/categories");
       setCategories(data || []);
     } catch (err: any) {
       console.error("Error fetching categories:", err);
